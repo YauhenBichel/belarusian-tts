@@ -1,0 +1,35 @@
+[project]
+name = "belarusian-tts"
+version = "0.1.0"
+description = "Natural Belarusian text-to-speech behind an OpenAI-style /v1/audio/speech (OmniVoice + a native reference voice)"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = "==3.12.*"
+dependencies = [
+    "omnivoice==0.2.1",
+    "torch==2.8.0",
+    "torchaudio==2.8.0",
+    "soundfile",
+    "numpy",
+]
+
+[dependency-groups]
+dev = ["pytest"]
+
+[tool.uv]
+# Linux x86_64, CPU builds of PyTorch (the default Linux wheels pull ~2.5 GB of NVIDIA libraries).
+environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
+package = false
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+torchaudio = { index = "pytorch-cpu" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
