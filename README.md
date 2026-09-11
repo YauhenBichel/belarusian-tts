@@ -76,6 +76,9 @@ Contributions, especially from Belarusian speakers, are welcome: [CONTRIBUTING.m
 ## Contributors
 
 <!-- readme: contributors,bots/- -start -->
+<p align="center">
+  <a href="https://github.com/YauhenBichel" title="Yauhen Bichel" aria-label="Yauhen Bichel"><img src=".github/faces/YauhenBichel.svg" width="87" height="99" alt="Yauhen Bichel" /></a>
+</p>
 <!-- readme: contributors,bots/- -end -->
 
 ## Licences
