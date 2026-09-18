@@ -85,3 +85,45 @@ def test_the_reference_clip_and_its_transcript_are_present():
     data, rate = sf.read(audio)
     assert rate == 16000 and 5.0 < len(data) / rate < 7.0
     assert text.startswith("На некаторых фестывалях")
+
+
+def test_a_gpu_that_is_not_there_falls_back_to_the_cpu(monkeypatch, capsys):
+    """BELARUSIAN_TTS_DEVICE=cuda on a machine whose torch has no CUDA must still give a working voice
+    (2026-09-18 on an AMD ROCm machine: "Torch not compiled with CUDA enabled")."""
+    import sys
+    import types
+
+    loads = []
+
+    class FakeOmniVoice:
+        @staticmethod
+        def from_pretrained(model_id, device_map, dtype):
+            loads.append(device_map)
+            if device_map != "cpu":
+                raise AssertionError("Torch not compiled with CUDA enabled")
+            return types.SimpleNamespace(generate=lambda **kw: [np.zeros(10)])
+
+    fake_torch = types.SimpleNamespace(float32="f32", float16="f16", set_num_threads=lambda n: None,
+                                       get_num_threads=lambda: 8)
+    monkeypatch.setitem(sys.modules, "torch", fake_torch)
+    monkeypatch.setitem(sys.modules, "omnivoice", types.SimpleNamespace(OmniVoice=FakeOmniVoice))
+    monkeypatch.setenv("BELARUSIAN_TTS_DEVICE", "cuda")
+    speaker = server.Speaker(server.REF_AUDIO, "reference text", num_step=16)
+    assert loads == ["cuda", "cpu"]
+    assert speaker.device == "cpu"
+    assert "falling back to cpu" in capsys.readouterr().out
+
+
+def test_the_default_stays_on_the_cpu(monkeypatch):
+    import sys
+    import types
+
+    loads = []
+    fake = types.SimpleNamespace(OmniVoice=types.SimpleNamespace(
+        from_pretrained=lambda model_id, device_map, dtype: loads.append((device_map, dtype)) or object()))
+    monkeypatch.setitem(sys.modules, "torch", types.SimpleNamespace(
+        float32="f32", float16="f16", set_num_threads=lambda n: None, get_num_threads=lambda: 8))
+    monkeypatch.setitem(sys.modules, "omnivoice", fake)
+    monkeypatch.delenv("BELARUSIAN_TTS_DEVICE", raising=False)
+    assert server.Speaker(server.REF_AUDIO, "reference text", num_step=16).device == "cpu"
+    assert loads == [("cpu", "f32")]
