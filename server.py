@@ -61,12 +61,25 @@ class Speaker:
 
             torch.set_num_threads(max(1, (torch.get_num_threads() or 8) // 2))
             t = time.monotonic()
-            model = OmniVoice.from_pretrained(MODEL_ID, device_map="cpu", dtype=torch.float32)
+            # A CPU takes about a minute per sentence, which is fine for a fixed phrase and far too slow to measure a
+            # voice over an evaluation set. BELARUSIAN_TTS_DEVICE=cuda puts it on a GPU where there is one; the default
+            # stays cpu so that nothing changes for someone running this on a laptop.
+            device = os.environ.get("BELARUSIAN_TTS_DEVICE", "cpu")
+            try:
+                model = OmniVoice.from_pretrained(MODEL_ID, device_map=device,
+                                                  dtype=torch.float32 if device == "cpu" else torch.float16)
+            except Exception as exc:  # noqa: BLE001 - a missing or busy GPU must not stop the server
+                if device == "cpu":
+                    raise
+                print(f"{device} unavailable ({type(exc).__name__}: {exc}); falling back to cpu", flush=True)
+                device = "cpu"
+                model = OmniVoice.from_pretrained(MODEL_ID, device_map="cpu", dtype=torch.float32)
+            self.device = device
             self.load_s = round(time.monotonic() - t, 1)
             generate = lambda text, speed: model.generate(text=text, ref_audio=str(ref_audio), ref_text=ref_text,
                                                          num_step=num_step, speed=speed)[0]
         else:
-            self.load_s = 0.0
+            self.load_s, self.device = 0.0, "test"
         self.generate, self.ref_text, self.num_step = generate, ref_text, num_step
         self.cache: dict[tuple, bytes] = {}
         self.lock = threading.Lock()  # one synthesis at a time; the model is not re-entrant
@@ -151,7 +164,8 @@ def main() -> None:
     ref_audio, ref_text = reference()
     speaker = Speaker(ref_audio, ref_text, args.num_step)
     info = {"model": MODEL_ID, "reference": "FLEURS be_by dev 2411614122304034736 (CC-BY-4.0)", "ref_text": ref_text,
-            "num_step": args.num_step, "load_s": speaker.load_s}
+            "num_step": args.num_step, "load_s": speaker.load_s,
+            "device": getattr(speaker, "device", "cpu")}
     srv = ThreadingHTTPServer((args.host, args.port), handler(speaker, info))
     print(f"belarusian-tts on http://{args.host}:{args.port} ({info})", flush=True)
     srv.serve_forever()
