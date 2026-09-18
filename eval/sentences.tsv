@@ -1,0 +1,33 @@
+# Evaluation sentences for a Belarusian voice. Tab separated: id, group, text, audio (optional human recording).
+# The groups are the places a Belarusian voice actually breaks: stress (not written, and it changes the word),
+# ў, dzekanne/cekanne, long consonants, voicing assimilation, numbers, abbreviations, computing terms, names.
+# These 25 are written for this test and carry no third-party licence. Rows with a human recording are added from
+# FLEURS be_by (CC-BY-4.0) by eval/add_fleurs.py, so the same sentences have a human ceiling.
+# `reference`, when given, is the spoken form the voice should produce; it is what gets scored. For formulas it
+# is one accepted reading, so a different correct reading still counts as an error there — read those rows by ear.
+id	group	text	audio	reference
+s01	stress	Гэта мука з пшаніцы, а не мука.
+s02	stress	Мы прыйшлі да замка, а ключ ад замка згубілі.
+s03	stress	Дарога вядзе на поўнач, а вецер дзьме з поўдня.
+s04	u-short	Ён пайшоў у школу, а потым быў на вуліцы.
+s05	u-short	Вучань узяў кнігу і ўзняў руку.
+s06	soft	Дзеці цікава глядзяць на дзіва.
+s07	soft	У цемры цяжка дзейнічаць і цяжка маўчаць.
+s08	long-consonant	Насенне і калоссе — жыццё поля.
+s09	long-consonant	Пытанне пра веданне мовы застаецца адкрытым.
+s10	assimilation	Казка пра дзеда і бабку скончылася добра.
+s11	assimilation	Лёгкі снег падае на дах і на ганак.
+s12	numbers	У 1991 годзе краіна атрымала незалежнасць.		У тысяча дзевяцьсот дзевяноста першым годзе краіна атрымала незалежнасць.
+s13	numbers	Аўтобус едзе а 7:45, білет каштуе 2,50 рубля.		Аўтобус едзе а сёмай сорак пяць, білет каштуе два рублі пяцьдзясят капеек.
+s14	numbers	Нам патрэбна 25 % ад 480 старонак.		Нам патрэбна дваццаць пяць працэнтаў ад чатырохсот васьмідзесяці старонак.
+s15	computing	Хэш-табліца дае доступ за O(1) у сярэднім.		Хэш-табліца дае доступ за о ад адзінкі ў сярэднім.
+s16	computing	Алгарытм Дэйкстры працуе за O(n log n).		Алгарытм Дэйкстры працуе за о ад эн лог эн.
+s17	computing	Масіў, спіс і чарга — базавыя структуры даных.
+s18	abbreviation	НАН Беларусі і БДУ падпісалі дамову.
+s19	abbreviation	Даўжыня — 12 км, вага — 3 кг.		Даўжыня — дванаццаць кіламетраў, вага — тры кілаграмы.
+s20	names	Янка Купала і Якуб Колас пісалі па-беларуску.
+s21	names	Мы былі ў Віцебску, Гродне і Наваполацку.
+s22	plain	Сёння цёплы вечар, і горад свеціцца агнямі.
+s23	plain	Калі ты вернешся, я буду чакаць каля дома.
+s24	prosody	Дзякуй за размову — да сустрэчы!
+s25	prosody	Ці ведаеш ты, колькі каштуе гэты білет?
