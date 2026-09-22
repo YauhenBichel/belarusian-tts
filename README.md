@@ -81,6 +81,21 @@ Contributions, especially from Belarusian speakers, are welcome: [CONTRIBUTING.m
 </p>
 <!-- readme: contributors,bots/- -end -->
 
+## Where it is used
+
+This voice speaks the Belarusian lines that are spoken rather than sung in the songs and clips of
+**Ahni Trasy / Агні трасы**:
+[«Chary Nochy» on Spotify](https://open.spotify.com/album/1RG2w6mCmm4GkbOHMQNUse) · [@y6574694 on TikTok](https://www.tiktok.com/@y6574694).
+Everything sung or generated there is AI-generated and labelled as such.
+
+## Belarusian language resources
+
+Worth knowing if you work with Belarusian: the **National Corpus of the Belarusian Language**,
+[bnkorpus.info](https://bnkorpus.info/) — a 177-million-token corpus with audio search, the
+[Grammar Database](https://github.com/Belarus/GrammarDB) (millions of forms with stress and
+morphology, CC BY-SA 4.0), the phonetic converter [BelG2P](https://github.com/Belarus/BelG2P) and
+the [BelVoice](https://github.com/Belarus/BelVoice) speech framework. This project does not use that data yet; BelG2P is the natural source for Belarusian phonetics, and the Grammar Database for stress.
+
 ## Licences
 
 Code: Apache-2.0 ([LICENSE](LICENSE)). Reference recording: FLEURS, CC-BY-4.0 (attribution in
