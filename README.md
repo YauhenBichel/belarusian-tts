@@ -53,6 +53,20 @@ Any OpenAI-compatible client works (`model` and `voice` are ignored; `response_f
 sentence is cached on disk (`BELARUSIAN_TTS_CACHE`, default `~/.cache/belarusian-tts`), so repeats are
 instant. Good for fixed phrases and prepared text; not yet for live conversation.
 
+## What kind of model this is
+
+**Text to speech (TTS), also called speech synthesis.** Text goes in, audio comes
+out. It is not a language model: it decides how a sentence should *sound*, not
+what the sentence should say.
+
+Today that is **OmniVoice**, a zero-shot voice cloning model — it copies the
+voice and accent of a short reference recording rather than being trained on one
+speaker, which is what makes a Belarusian voice possible without a studio.
+The roadmap swaps this for a small **Piper** voice, which is the opposite trade:
+one fixed voice, trained once, far smaller and faster. Its sibling is
+[belarusian-asr](https://github.com/YauhenBichel/belarusian-asr), which goes the
+other way: audio in, text out.
+
 ## How it works
 
 - **Model:** [OmniVoice](https://github.com/k2-fsa/OmniVoice) (k2-fsa, Apache-2.0), zero-shot voice
