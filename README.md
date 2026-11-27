@@ -35,7 +35,7 @@ What works today is a large multilingual model cloning a **native Belarusian spe
 what this repository serves. It is slow on a CPU, so the second half of the project is a small
 voice that can run on a Raspberry Pi.
 
-## Use
+## Quick start
 
 Linux x86_64, Python 3.12, [uv](https://docs.astral.sh/uv/):
 
@@ -49,9 +49,60 @@ curl -s 127.0.0.1:11810/v1/audio/speech -H 'content-type: application/json' \
 Any OpenAI-compatible client works (`model` and `voice` are ignored; `response_format` must be
 `wav`; `speed` 0.5–2.0). `GET /healthz` reports the model and the reference voice.
 
+Expected result: `out.wav` is a 24 kHz mono WAV of the spoken sentence. The sample committed in this repository was
+made with exactly this request. Checking it (this runs anywhere with `soundfile` installed):
+
+```console
+$ python -c "import soundfile as sf; i = sf.info('samples/dziakuj-da-sustrechy.wav'); print(i.samplerate, i.channels, i.duration, i.subtype)"
+24000 1 2.0 PCM_16
+```
+
+The server itself needs Linux x86_64 and about 1.2 GB for the model, so it was not started for this check; the
+HTTP contract is covered by the test suite (`uv run python -m pytest -q`, a fake voice stands in for the model).
+
 **Speed:** on a 16-thread CPU a 2-second sentence takes about a minute the first time; every
 sentence is cached on disk (`BELARUSIAN_TTS_CACHE`, default `~/.cache/belarusian-tts`), so repeats are
 instant. Good for fixed phrases and prepared text; not yet for live conversation.
+
+## When to use it, and when not
+
+Use it to turn fixed or prepared Belarusian text into speech on your own machine: prompts, announcements, robot
+phrases, narration, with a native-speaker voice and an OpenAI-compatible endpoint.
+
+Do not use it yet for live conversation (a short sentence takes about a minute on a CPU the first time), for
+several voices (there is one reference voice), or for other languages through this server. Output can mispronounce
+names and numbers; there is no Belarusian number or date normalisation yet.
+
+## FAQ
+
+### How do I get Belarusian text-to-speech from a script or an app?
+
+Start the server as in the [quick start](#quick-start) and POST JSON to `/v1/audio/speech`. Any OpenAI-compatible
+client can do it.
+
+### Does it send my text anywhere?
+
+No. Synthesis runs on your machine and the server listens on `127.0.0.1` by default. The network is used once, to
+download the OmniVoice model on first start.
+
+### Can I choose a different voice?
+
+Not through the API: `model` and `voice` are ignored. To change the voice, replace the reference recording and its
+exact transcript, as described in [docs/voices.md](docs/voices.md).
+
+### Why is it slow, and how do I make repeats fast?
+
+It runs a large multilingual model on a CPU. Every sentence is cached on disk, so a repeated sentence is instant.
+`--num-step 16` is faster than the default 32. A small, fast Piper voice is the roadmap.
+
+### How is it different from Piper, Kokoro or Meta MMS?
+
+They do not ship a Belarusian voice (see [Why](#why)). This repository serves a model that clones a native
+Belarusian speaker, which is natural but heavy. It is not a replacement for a small trained voice.
+
+### Is it on PyPI?
+
+No, and it is not meant to be: it is a server you run from a clone of this repository.
 
 ## What kind of model this is
 

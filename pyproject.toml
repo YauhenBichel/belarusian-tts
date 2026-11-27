@@ -3,6 +3,7 @@ name = "belarusian-tts"
 version = "0.1.0"
 description = "Natural Belarusian text-to-speech behind an OpenAI-style /v1/audio/speech (OmniVoice + a native reference voice)"
 readme = "README.md"
+keywords = ["belarusian", "text-to-speech", "tts", "speech-synthesis", "voice-cloning", "omnivoice", "openai-compatible"]
 license = "Apache-2.0"
 requires-python = "==3.12.*"
 dependencies = [
@@ -12,6 +13,11 @@ dependencies = [
     "soundfile",
     "numpy",
 ]
+
+[project.urls]
+Homepage = "https://github.com/YauhenBichel/belarusian-tts"
+Issues = "https://github.com/YauhenBichel/belarusian-tts/issues"
+Changelog = "https://github.com/YauhenBichel/belarusian-tts/blob/main/CHANGELOG.md"
 
 [dependency-groups]
 dev = ["pytest"]
